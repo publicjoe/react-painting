@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Model } from '../types';
+import type { Model, StatusField } from '../types';
 
 interface ModelTableProps {
   projectId: string;
@@ -7,8 +7,38 @@ interface ModelTableProps {
   onAddModel: (projectId: string, name: string) => void;
   onUpdateModel: (model: Model) => void;
   onDeleteModel: (id: string) => void;
-  onToggleStatus: (id: string, field: keyof Model) => void;
+  onToggleStatus: (id: string, field: StatusField) => void;
 }
+
+interface StatusCheckboxProps {
+  model: Model;
+  field: StatusField;
+  label: string;
+  onToggle: (id: string, field: StatusField) => void;
+}
+
+const StatusCheckbox: React.FC<StatusCheckboxProps> = ({ model, field, label, onToggle }) => (
+  <label className="flex items-center justify-center p-2 cursor-pointer group">
+    <input
+      type="checkbox"
+      className="peer sr-only"
+      checked={model[field]}
+      onChange={() => onToggle(model.id, field)}
+    />
+    <div className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all peer-focus-visible:ring-2 peer-focus-visible:ring-blue-400 ${
+      model[field]
+        ? 'bg-blue-500 border-blue-500 text-white'
+        : 'border-zinc-500 group-hover:border-blue-400 bg-zinc-800'
+    }`}>
+      {model[field] && (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+        </svg>
+      )}
+    </div>
+    <span className="sr-only">{`${label} - ${model.name}`}</span>
+  </label>
+);
 
 export const ModelTable: React.FC<ModelTableProps> = ({
   projectId,
@@ -27,37 +57,6 @@ export const ModelTable: React.FC<ModelTableProps> = ({
       setNewModelName('');
     }
   };
-
-  const StatusCheckbox = ({ 
-    model, 
-    field, 
-    label 
-  }: { 
-    model: Model, 
-    field: keyof Model, 
-    label: string 
-  }) => (
-    <label className="flex items-center justify-center p-2 cursor-pointer group">
-      <input
-        type="checkbox"
-        className="sr-only"
-        checked={!!model[field]}
-        onChange={() => onToggleStatus(model.id, field)}
-      />
-      <div className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${
-        model[field] 
-          ? 'bg-blue-500 border-blue-500 text-white' 
-          : 'border-zinc-500 group-hover:border-blue-400 bg-zinc-800'
-      }`}>
-        {model[field] && (
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-          </svg>
-        )}
-      </div>
-      <span className="sr-only">{label}</span>
-    </label>
-  );
 
   return (
     <div className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700/50">
@@ -80,9 +79,13 @@ export const ModelTable: React.FC<ModelTableProps> = ({
                 <td className="px-4 py-2 font-medium text-zinc-100">
                   <input 
                     type="text" 
+                    aria-label="Model name"
                     className="bg-transparent border-b border-transparent hover:border-zinc-600 focus:border-blue-500 focus:outline-none w-full"
                     value={model.name}
                     onChange={(e) => onUpdateModel({ ...model, name: e.target.value })}
+                    onBlur={(e) => {
+                      if (!e.target.value.trim()) onUpdateModel({ ...model, name: 'Untitled model' });
+                    }}
                   />
                 </td>
                 <td className="px-4 py-2">
@@ -90,23 +93,30 @@ export const ModelTable: React.FC<ModelTableProps> = ({
                     <input 
                       type="number" 
                       min="1"
+                      aria-label="Count"
                       className="bg-zinc-900 border border-zinc-600 rounded px-2 py-1 w-16 text-center text-zinc-100 focus:border-blue-500 focus:outline-none"
                       value={model.count}
-                      onChange={(e) => onUpdateModel({ ...model, count: parseInt(e.target.value) || 0 })}
+                      onChange={(e) => {
+                        const n = parseInt(e.target.value, 10);
+                        if (!Number.isNaN(n)) onUpdateModel({ ...model, count: Math.max(1, n) });
+                      }}
                     />
                   </div>
                 </td>
-                <td className="p-2"><StatusCheckbox model={model} field="built" label="Built" /></td>
-                <td className="p-2"><StatusCheckbox model={model} field="primed" label="Primed" /></td>
-                <td className="p-2"><StatusCheckbox model={model} field="painted" label="Painted" /></td>
-                <td className="p-2"><StatusCheckbox model={model} field="based" label="Based" /></td>
+                <td className="p-2"><StatusCheckbox model={model} onToggle={onToggleStatus} field="built" label="Built" /></td>
+                <td className="p-2"><StatusCheckbox model={model} onToggle={onToggleStatus} field="primed" label="Primed" /></td>
+                <td className="p-2"><StatusCheckbox model={model} onToggle={onToggleStatus} field="painted" label="Painted" /></td>
+                <td className="p-2"><StatusCheckbox model={model} onToggle={onToggleStatus} field="based" label="Based" /></td>
                 <td className="px-4 py-2 text-right">
                   <button
-                    onClick={() => onDeleteModel(model.id)}
+                    onClick={() => {
+                      if (confirm(`Delete model "${model.name}"?`)) onDeleteModel(model.id);
+                    }}
+                    aria-label={`Delete model ${model.name}`}
                     className="text-zinc-500 hover:text-red-400 p-2 transition-colors rounded-full hover:bg-zinc-700"
                     title="Delete Model"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>

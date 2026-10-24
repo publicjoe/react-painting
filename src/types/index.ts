@@ -25,3 +25,5 @@ export interface AppState {
   projects: Project[];
   models: Model[];
 }
+
+export type StatusField = 'built' | 'primed' | 'painted' | 'based';

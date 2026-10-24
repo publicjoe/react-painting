@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary: #3b82f6; /* example tailwind v4 theme standard styling */
-}
-
 /* Base custom resets */
 body {
   @apply bg-zinc-900 text-zinc-100 min-h-screen text-sm md:text-base;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { Category } from '../types';
 
 interface SidebarProps {
@@ -6,7 +6,10 @@ interface SidebarProps {
   selectedCategoryId: string | null;
   onSelectCategory: (id: string) => void;
   onAddCategory: (name: string) => void;
+  onRenameCategory: (id: string, name: string) => void;
   onDeleteCategory: (id: string) => void;
+  onExport: () => void;
+  onImport: (file: File) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -14,10 +17,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedCategoryId,
   onSelectCategory,
   onAddCategory,
+  onRenameCategory,
   onDeleteCategory,
+  onExport,
+  onImport,
 }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [newCatName, setNewCatName] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const commitRename = () => {
+    if (editingId && editName.trim()) onRenameCategory(editingId, editName.trim());
+    setEditingId(null);
+  };
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,25 +58,62 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {categories.map((cat) => (
           <div
             key={cat.id}
-            className={`group flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors ${
+            className={`group flex items-center justify-between rounded-lg transition-colors ${
               selectedCategoryId === cat.id
                 ? 'bg-blue-600/20 text-blue-400'
                 : 'hover:bg-zinc-700/50 text-zinc-300'
             }`}
-            onClick={() => onSelectCategory(cat.id)}
           >
-            <span className="truncate">{cat.name}</span>
+            {editingId === cat.id ? (
+              <input
+                type="text"
+                autoFocus
+                aria-label="Category name"
+                className="flex-1 min-w-0 m-1 bg-zinc-900 border border-zinc-700 text-zinc-100 text-sm rounded p-1 focus:border-blue-500 focus:outline-none"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                onBlur={commitRename}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') commitRename();
+                  if (e.key === 'Escape') setEditingId(null);
+                }}
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => onSelectCategory(cat.id)}
+                aria-current={selectedCategoryId === cat.id ? 'true' : undefined}
+                className="flex-1 min-w-0 text-left p-2 rounded-lg truncate"
+              >
+                {cat.name}
+              </button>
+            )}
             <button
-              onClick={(e) => {
-                e.stopPropagation();
+              type="button"
+              onClick={() => {
+                setEditingId(cat.id);
+                setEditName(cat.name);
+              }}
+              className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 p-1 hover:text-blue-300 transition-opacity"
+              title="Rename Category"
+              aria-label={`Rename category ${cat.name}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13l6.768-6.768a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H8v-2.414a2 2 0 01.586-1.414z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
                 if (confirm('Are you sure you want to delete this category and all its projects/models?')) {
                   onDeleteCategory(cat.id);
                 }
               }}
-              className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 transition-opacity"
+              className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 p-1 mr-1 hover:text-red-400 transition-opacity"
               title="Delete Category"
+              aria-label={`Delete category ${cat.name}`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
@@ -74,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={() => setIsAdding(true)}
             className="flex items-center space-x-2 text-zinc-400 hover:text-zinc-200 w-full p-2 rounded-lg transition-colors mt-2"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
             <span>Add Category</span>
@@ -85,6 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               type="text"
               autoFocus
               className="w-full bg-zinc-900 border border-zinc-700 text-zinc-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2"
+              aria-label="New category name"
               placeholder="Category name"
               value={newCatName}
               onChange={(e) => setNewCatName(e.target.value)}
@@ -94,6 +146,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           </form>
         )}
+      </div>
+
+      <div className="p-4 border-t border-zinc-700 flex gap-2 text-sm">
+        <button
+          type="button"
+          onClick={onExport}
+          className="flex-1 rounded-lg bg-zinc-700/50 hover:bg-zinc-700 text-zinc-300 py-1.5 transition-colors"
+        >
+          Export
+        </button>
+        <button
+          type="button"
+          onClick={() => fileInput.current?.click()}
+          className="flex-1 rounded-lg bg-zinc-700/50 hover:bg-zinc-700 text-zinc-300 py-1.5 transition-colors"
+        >
+          Import
+        </button>
+        <input
+          ref={fileInput}
+          type="file"
+          accept="application/json,.json"
+          className="hidden"
+          aria-label="Import data file"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) onImport(file);
+            e.target.value = '';
+          }}
+        />
       </div>
     </aside>
   );

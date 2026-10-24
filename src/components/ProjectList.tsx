@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import type { Project, Model, Category } from '../types';
+import type { Project, Model, Category, StatusField } from '../types';
 import { ModelTable } from './ModelTable';
 
 interface ProjectListProps {
   category: Category;
   projects: Project[];
-  models: Model[];
+  modelsByProject: Record<string, Model[]>;
   onAddProject: (categoryId: string, name: string) => void;
   onUpdateProject: (project: Project) => void;
   onDeleteProject: (id: string) => void;
   onAddModel: (projectId: string, name: string) => void;
   onUpdateModel: (model: Model) => void;
   onDeleteModel: (id: string) => void;
-  onToggleStatus: (id: string, field: keyof Model) => void;
+  onToggleStatus: (id: string, field: StatusField) => void;
 }
 
 export const ProjectList: React.FC<ProjectListProps> = ({
   category,
   projects,
-  models,
+  modelsByProject,
   onAddProject,
   onUpdateProject,
   onDeleteProject,
@@ -45,8 +45,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
     }));
   };
 
-  const getProjectProgress = (projectId: string) => {
-    const projectModels = models.filter(m => m.projectId === projectId);
+  const getProjectProgress = (projectModels: Model[]) => {
     const totalCount = projectModels.reduce((sum, m) => sum + m.count, 0);
     const paintedCount = projectModels.filter(m => m.painted).reduce((sum, m) => sum + m.count, 0);
     const percentage = totalCount === 0 ? 0 : Math.round((paintedCount / totalCount) * 100);
@@ -65,6 +64,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
         <form onSubmit={handleAdd} className="flex gap-2">
           <input
             type="text"
+            aria-label="New project name"
             className="bg-zinc-800 border border-zinc-700 text-zinc-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2"
             placeholder="New Project Name"
             value={newProjectName}
@@ -92,35 +92,43 @@ export const ProjectList: React.FC<ProjectListProps> = ({
         <div className="space-y-6">
           {projects.map((project) => {
             const isExpanded = expandedProjects[project.id] !== false; // Default true
-            const projectModels = models.filter(m => m.projectId === project.id);
-            const progress = getProjectProgress(project.id);
+            const projectModels = modelsByProject[project.id] ?? [];
+            const progress = getProjectProgress(projectModels);
             
             return (
               <div key={project.id} className="bg-zinc-800/40 border border-zinc-700/50 rounded-xl overflow-hidden shadow-lg">
                 {/* Project Header */}
-                <div 
-                  className="p-5 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-zinc-800/80 transition-colors gap-4"
-                  onClick={() => toggleExpand(project.id)}
-                >
+                <div className="p-5 flex flex-col md:flex-row md:items-center justify-between hover:bg-zinc-800/80 transition-colors gap-4">
                   <div className="flex items-center space-x-4">
-                    <svg 
-                      className={`w-6 h-6 text-zinc-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    <button
+                      type="button"
+                      onClick={() => toggleExpand(project.id)}
+                      aria-expanded={isExpanded}
+                      aria-label={`${isExpanded ? 'Collapse' : 'Expand'} project ${project.name}`}
+                      className="text-zinc-500 hover:text-zinc-300 rounded focus-visible:outline-2 focus-visible:outline-blue-400"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                    
-                    <input 
-                      type="text" 
+                      <svg
+                        className={`w-6 h-6 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    <input
+                      type="text"
+                      aria-label="Project name"
                       className="text-xl font-semibold bg-transparent border-b border-transparent hover:border-zinc-600 focus:border-blue-500 focus:outline-none text-zinc-100"
                       value={project.name}
-                      onClick={(e) => e.stopPropagation()}
                       onChange={(e) => onUpdateProject({ ...project, name: e.target.value })}
+                      onBlur={(e) => {
+                        if (!e.target.value.trim()) onUpdateProject({ ...project, name: 'Untitled project' });
+                      }}
                     />
                   </div>
-                  
+
                   <div className="flex items-center gap-6 ml-10 md:ml-0">
-                    <div className="flex flex-col items-end hidden md:flex">
+                    <div className="hidden md:flex flex-col items-end">
                       <span className="text-xs text-zinc-400 mb-1">
                         {progress.paintedCount} / {progress.totalCount} Models Painted
                       </span>
@@ -136,16 +144,16 @@ export const ProjectList: React.FC<ProjectListProps> = ({
                     </span>
                     
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         if (confirm(`Delete project "${project.name}" and all its models?`)) {
                           onDeleteProject(project.id);
                         }
                       }}
                       className="text-zinc-500 hover:text-red-400 p-2 transition-colors rounded-lg hover:bg-zinc-700/50 ml-2"
                       title="Delete Project"
+                      aria-label={`Delete project ${project.name}`}
                     >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>

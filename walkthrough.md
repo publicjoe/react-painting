@@ -26,7 +26,8 @@ The Painting Log web application has been fully implemented!
 
 1. Make sure you are in the directory we built:
    ```bash
-   cd /Users/michaelkitchen/dev/react-painting
+   cd react-painting
+   npm install
    ```
 2. Start the development server using Vite:
    ```bash

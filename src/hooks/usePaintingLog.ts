@@ -1,5 +1,4 @@
 import { useReducer, useEffect } from 'react';
-<<<<<<< HEAD
 import type { AppState, Unit, Project, Category, StageColumn } from '../types';
 import { defaultState, defaultColumns } from '../data/defaultData';
 
@@ -62,57 +61,6 @@ function paintingLogReducer(state: AppState, action: Action): AppState {
     }
 
     case 'DELETE_CATEGORY':
-=======
-import type { AppState, Category, Project, Model, StatusField } from '../types';
-
-type Action =
-  | { type: 'REPLACE_STATE'; payload: AppState }
-  | { type: 'ADD_CATEGORY'; payload: Category }
-  | { type: 'UPDATE_CATEGORY'; payload: Category }
-  | { type: 'DELETE_CATEGORY'; payload: string } // categoryId
-  | { type: 'ADD_PROJECT'; payload: Project }
-  | { type: 'UPDATE_PROJECT'; payload: Project }
-  | { type: 'DELETE_PROJECT'; payload: string } // projectId
-  | { type: 'ADD_MODEL'; payload: Model }
-  | { type: 'UPDATE_MODEL'; payload: Model }
-  | { type: 'DELETE_MODEL'; payload: string } // modelId
-  | { type: 'TOGGLE_MODEL_STATUS'; payload: { id: string; field: StatusField } };
-
-export const initialState: AppState = {
-  categories: [],
-  projects: [],
-  models: []
-};
-
-export function reducer(state: AppState, action: Action): AppState {
-  switch (action.type) {
-    case 'REPLACE_STATE':
-      return action.payload;
-
-    // Categories
-    case 'ADD_CATEGORY':
-      return { ...state, categories: [...state.categories, action.payload] };
-    case 'UPDATE_CATEGORY':
-      return { ...state, categories: state.categories.map(c => c.id === action.payload.id ? action.payload : c) };
-    case 'DELETE_CATEGORY':
-      return { 
-        ...state, 
-        categories: state.categories.filter(c => c.id !== action.payload),
-        projects: state.projects.filter(p => p.categoryId !== action.payload),
-        // cascade: drop models belonging to projects in this category
-        models: state.models.filter(m => {
-          const project = state.projects.find(p => p.id === m.projectId);
-          return project?.categoryId !== action.payload;
-        })
-      };
-
-    // Projects
-    case 'ADD_PROJECT':
-      return { ...state, projects: [...state.projects, action.payload] };
-    case 'UPDATE_PROJECT':
-      return { ...state, projects: state.projects.map(p => p.id === action.payload.id ? action.payload : p) };
-    case 'DELETE_PROJECT':
->>>>>>> 0a25e5c4ef1959c5c87c0e0a598d475a25208035
       return {
         ...state,
         categories: state.categories.filter((c) => c.id !== action.payload),
@@ -126,7 +74,6 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'TOGGLE_CATEGORY_VISIBILITY':
       return {
         ...state,
-<<<<<<< HEAD
         categories: state.categories.map((c) =>
           c.id === action.payload ? { ...c, isVisible: !c.isVisible } : c
         ),
@@ -226,11 +173,6 @@ export function reducer(state: AppState, action: Action): AppState {
         projects: state.projects.map((p) =>
           p.id === action.payload.projectId ? { ...p, columns: action.payload.columns } : p
         ),
-=======
-        models: state.models.map(m =>
-          m.id === action.payload.id ? { ...m, [action.payload.field]: !m[action.payload.field] } : m
-        )
->>>>>>> 0a25e5c4ef1959c5c87c0e0a598d475a25208035
       };
 
     default:
@@ -247,7 +189,6 @@ export function isAppState(value: unknown): value is AppState {
 }
 
 export function usePaintingLog() {
-<<<<<<< HEAD
   const [state, dispatch] = useReducer(paintingLogReducer, defaultState, (fallback) => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -257,15 +198,6 @@ export function usePaintingLog() {
         if (parsed.projects && parsed.units && parsed.categories) {
           return parsed;
         }
-=======
-  const [state, dispatch] = useReducer(reducer, initialState, (initial): AppState => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed: unknown = JSON.parse(stored);
-        if (isAppState(parsed)) return parsed;
-        console.error("Ignoring malformed state in local storage");
->>>>>>> 0a25e5c4ef1959c5c87c0e0a598d475a25208035
       }
     } catch (err) {
       console.warn('Could not parse saved painting log state, using defaults', err);
@@ -276,13 +208,8 @@ export function usePaintingLog() {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-<<<<<<< HEAD
     } catch (err) {
       console.error('Failed to save state to localStorage', err);
-=======
-    } catch (e) {
-      console.error("Failed to save state to local storage", e);
->>>>>>> 0a25e5c4ef1959c5c87c0e0a598d475a25208035
     }
   }, [state]);
 

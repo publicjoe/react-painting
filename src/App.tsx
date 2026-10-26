@@ -1,7 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { usePaintingLog } from './hooks/usePaintingLog';
 import { Header } from './components/Header';
-import { StatsBar } from './components/StatsBar';
 import { SidebarProjects } from './components/SidebarProjects';
 import { UnitTable } from './components/UnitTable';
 
@@ -106,18 +105,6 @@ export default function App() {
         onImportData={handleImportData}
       />
 
-      {/* Stats Sub-Bar */}
-      <StatsBar
-        username={state.username || ''}
-        projectId={activeProject?.id || '13493085'}
-        totalPoints={stats.totalPoints}
-        totalModels={stats.totalModels}
-        pointsCompleteCount={stats.pointsCompleteCount}
-        pointsCompletePercent={stats.pointsCompletePercent}
-        modelsCompleteCount={stats.modelsCompleteCount}
-        modelsCompletePercent={stats.modelsCompletePercent}
-      />
-
       {/* Main Content: Two Columns (Left Sidebar + Right Table) */}
       <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-6 py-4 flex flex-col lg:flex-row gap-5 relative z-10">
         
@@ -158,6 +145,9 @@ export default function App() {
           <UnitTable
             columns={activeProject.columns}
             units={activeUnits}
+            totalModels={stats.totalModels}
+            modelsCompleteCount={stats.modelsCompleteCount}
+            modelsCompletePercent={stats.modelsCompletePercent}
             onAddUnit={(name, count, stages) =>
               dispatch({
                 type: 'ADD_UNIT',

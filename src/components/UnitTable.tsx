@@ -12,6 +12,9 @@ import {
 interface UnitTableProps {
   columns: StageColumn[];
   units: Unit[];
+  totalModels: number;
+  modelsCompleteCount: number;
+  modelsCompletePercent: number;
   onAddUnit: (name: string, count: number, stages: boolean[]) => void;
   onUpdateUnit: (unit: Unit) => void;
   onDeleteUnit: (id: string) => void;
@@ -43,6 +46,9 @@ function reorderUnitsList(
 export const UnitTable: React.FC<UnitTableProps> = ({
   columns,
   units,
+  totalModels,
+  modelsCompleteCount,
+  modelsCompletePercent,
   onAddUnit,
   onUpdateUnit,
   onDeleteUnit,
@@ -183,8 +189,44 @@ export const UnitTable: React.FC<UnitTableProps> = ({
               </span>
             </div>
 
-            {/* Model Count / Points Header Spacer */}
-            <div className="w-14 text-center"></div>
+            {/* Models Complete (percentage complete | count complete) */}
+            <div
+              className="flex items-center gap-1.5 shrink-0"
+              title="Models fully through every stage, and as a share of all models"
+            >
+              <span className="font-heading text-[10px] font-bold text-zinc-400 uppercase tracking-wider leading-none">
+                Done
+              </span>
+              <div className="h-8 rounded flex shadow-md overflow-hidden border border-[#1b1e22]">
+                <div className="px-2 bg-[#0e7580] flex items-center justify-center border-r border-[#0b5c65]">
+                  <span className="font-heading text-base font-bold text-white leading-none">
+                    {modelsCompletePercent.toFixed(0)}%
+                  </span>
+                </div>
+                <div className="px-2 bg-[#181a1d] flex items-center justify-center">
+                  <span className="font-heading text-base font-bold text-white leading-none">
+                    {modelsCompleteCount}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Total Models label */}
+            <span
+              className="font-heading text-[10px] font-bold text-zinc-400 uppercase tracking-wider leading-none shrink-0 pl-4"
+              title="Total models across all units"
+            >
+              Total
+            </span>
+
+            {/* Total Models value — sized to the model count column so it sits directly above the per-unit counts */}
+            <div className="w-14 flex items-center justify-center" title="Total models across all units">
+              <span className="w-11 h-8 rounded bg-[#0e7580] border border-[#0b5c65] flex items-center justify-center shadow-md">
+                <span className="font-heading text-base font-bold text-white tracking-wide leading-none">
+                  {totalModels}
+                </span>
+              </span>
+            </div>
 
             {/* Stage Icons */}
             <div className="flex items-center">

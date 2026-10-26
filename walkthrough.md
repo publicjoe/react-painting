@@ -39,6 +39,7 @@ The application has been transformed to match the **Pile of Potential** interfac
      - Project visibility toggle (`PUBLIC` / `PRIVATE`).
      - Customizable project columns and stages.
 
+<<<<<<< HEAD
 4. **Units & Painting Stages Table (Right Column)**
    - **Interactive Drag & Drop Reordering**:
      - Grab any unit using the **six dots** handle on the left with left-click and hold.
@@ -61,3 +62,21 @@ The application has been transformed to match the **Pile of Potential** interfac
    - **Inline Editing & Management**:
      - Unit names and model counts are editable directly in the row.
      - Red trash can buttons for deletion.
+=======
+3. **Models Breakdown**
+   - Sleek and minimalistic input toggles explicitly for: Built, Primed, Painted, Based statuses. 
+   - A tabular view utilizing custom Tailwind CSS checkboxes (smooth SVGs) combined with editable inline text fields for rapidly updating names or counts.
+
+## How to Run
+
+1. Make sure you are in the directory we built:
+   ```bash
+   cd react-painting
+   npm install
+   ```
+2. Start the development server using Vite:
+   ```bash
+   npm run dev
+   ```
+3. Open the provided `localhost` domain (typically `http://localhost:5173`) in your browser to experience it for yourself!
+>>>>>>> 0a25e5c4ef1959c5c87c0e0a598d475a25208035

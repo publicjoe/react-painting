@@ -36,3 +36,5 @@ export interface AppState {
   projects: Project[];
   units: Unit[];
 }
+
+export type StatusField = 'built' | 'primed' | 'painted' | 'based';

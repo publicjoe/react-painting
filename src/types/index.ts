@@ -16,7 +16,6 @@ export interface Project {
   id: string;
   categoryId: string;
   name: string;
-  visibility: 'public' | 'private';
   columns: StageColumn[];
 }
 

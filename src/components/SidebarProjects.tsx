@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Category, Project, StageColumn } from '../types';
-import { EyeIcon, TrashIcon, EditPencilIcon, LockIcon, DragGripIcon } from './Icons';
+import { EyeIcon, TrashIcon, EditPencilIcon, DragGripIcon } from './Icons';
 
 interface SidebarProjectsProps {
   categories: Category[];
@@ -15,7 +15,6 @@ interface SidebarProjectsProps {
   onAddProject: (categoryId: string, name: string) => void;
   onDeleteProject: (id: string) => void;
   onUpdateProjectName: (projectId: string, name: string) => void;
-  onUpdateProjectVisibility: (projectId: string, visibility: 'public' | 'private') => void;
   onUpdateProjectColumns: (projectId: string, columns: StageColumn[]) => void;
 }
 
@@ -32,7 +31,6 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
   onAddProject,
   onDeleteProject,
   onUpdateProjectName,
-  onUpdateProjectVisibility,
   onUpdateProjectColumns,
 }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
@@ -421,41 +419,7 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
               />
             </div>
 
-            {/* Field 2: PROJECT VISIBILITY */}
-            <div className="space-y-1.5">
-              <label className="block font-heading text-xs font-bold text-white uppercase tracking-wider">
-                PROJECT VISIBILITY
-              </label>
-              <div className="inline-flex rounded-md p-0.5 bg-[#15171b] border border-zinc-700/80">
-                <button
-                  type="button"
-                  onClick={() => onUpdateProjectVisibility(activeProject.id, 'public')}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-heading font-bold uppercase tracking-wider transition-all ${
-                    activeProject.visibility === 'public'
-                      ? 'bg-[#216b3f] text-white shadow-xs'
-                      : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  <LockIcon className="w-3 h-3 text-emerald-300" />
-                  <span>PUBLIC</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onUpdateProjectVisibility(activeProject.id, 'private')}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-heading font-bold uppercase tracking-wider transition-all ${
-                    activeProject.visibility === 'private'
-                      ? 'bg-zinc-700 text-white shadow-xs'
-                      : 'text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  <LockIcon className="w-3 h-3 text-zinc-400" />
-                  <span>PRIVATE</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Field 3: PROJECT COLUMNS */}
+            {/* Field 2: PROJECT COLUMNS */}
             <div className="space-y-1.5 border-t border-zinc-800 pt-3">
               <div
                 onClick={() => setColumnsExpanded(!columnsExpanded)}

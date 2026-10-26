@@ -37,7 +37,6 @@ tracked through configurable painting stages.
    - **Uncategorised Group**: a maroon banner holding unallocated projects.
    - **Project Settings**:
      - Inline project name editing.
-     - Project visibility toggle (`PUBLIC` / `PRIVATE`).
      - **Project Columns**: expandable list of the stage columns, each renameable
        inline. Stages are per project, so different projects can use different
        workflows; unit rows store a tick per column.

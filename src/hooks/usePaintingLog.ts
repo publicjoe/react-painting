@@ -6,7 +6,6 @@ export type Action =
   | { type: 'SET_STATE'; payload: AppState }
   | { type: 'SET_ACTIVE_PROJECT'; payload: string }
   | { type: 'UPDATE_PROJECT_NAME'; payload: { projectId: string; name: string } }
-  | { type: 'UPDATE_PROJECT_VISIBILITY'; payload: { projectId: string; visibility: 'public' | 'private' } }
   | { type: 'ADD_CATEGORY'; payload: { name: string } }
   | { type: 'UPDATE_CATEGORY_NAME'; payload: { categoryId: string; name: string } }
   | { type: 'DELETE_CATEGORY'; payload: string }
@@ -34,14 +33,6 @@ export function paintingLogReducer(state: AppState, action: Action): AppState {
         ...state,
         projects: state.projects.map((p) =>
           p.id === action.payload.projectId ? { ...p, name: action.payload.name } : p
-        ),
-      };
-
-    case 'UPDATE_PROJECT_VISIBILITY':
-      return {
-        ...state,
-        projects: state.projects.map((p) =>
-          p.id === action.payload.projectId ? { ...p, visibility: action.payload.visibility } : p
         ),
       };
 
@@ -98,7 +89,6 @@ export function paintingLogReducer(state: AppState, action: Action): AppState {
         id: newProjId,
         categoryId: action.payload.categoryId,
         name: action.payload.name,
-        visibility: 'public',
         columns: [...defaultColumns],
       };
       return {

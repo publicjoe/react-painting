@@ -11,7 +11,6 @@ const project = (id: string, categoryId: string, name: string): Project => ({
   id,
   categoryId,
   name,
-  visibility: 'public',
   columns,
 });
 

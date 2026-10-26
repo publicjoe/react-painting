@@ -121,6 +121,7 @@ export default function App() {
           onUpdateProjectName={(projectId, name) =>
             dispatch({ type: 'UPDATE_PROJECT_NAME', payload: { projectId, name } })
           }
+          onMoveProject={(request) => dispatch({ type: 'MOVE_PROJECT', payload: request })}
           dropProjectId={dropProjectId}
         />
 

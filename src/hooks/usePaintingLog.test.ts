@@ -114,6 +114,89 @@ describe('paintingLogReducer', () => {
     expect(next).toBe(seeded);
   });
 
+  it('moves a project to the end of another category', () => {
+    const state: AppState = {
+      ...seeded,
+      projects: [
+        project('p1', 'c1', 'Marines'),
+        project('p2', 'c2', 'Party'),
+        project('p3', 'c2', 'Rogues'),
+      ],
+    };
+
+    const next = reducer(state, {
+      type: 'MOVE_PROJECT',
+      payload: { projectId: 'p1', categoryId: 'c2', targetProjectId: null, position: 'after' },
+    });
+
+    expect(next.projects.map((p) => p.id)).toEqual(['p2', 'p3', 'p1']);
+    expect(next.projects[2].categoryId).toBe('c2');
+    // Units belong to the project, not the category, so they come along untouched.
+    expect(next.units).toEqual(state.units);
+    // A move must not change which project is open.
+    expect(next.activeProjectId).toBe(state.activeProjectId);
+  });
+
+  it('inserts a project before the row it was dropped on, across categories', () => {
+    const state: AppState = {
+      ...seeded,
+      projects: [
+        project('p1', 'c1', 'Marines'),
+        project('p2', 'c2', 'Party'),
+        project('p3', 'c1', 'Guard'),
+      ],
+    };
+
+    const next = reducer(state, {
+      type: 'MOVE_PROJECT',
+      payload: { projectId: 'p3', categoryId: 'c2', targetProjectId: 'p2', position: 'before' },
+    });
+
+    expect(next.projects.map((p) => p.id)).toEqual(['p1', 'p3', 'p2']);
+    expect(next.projects.find((p) => p.id === 'p3')?.categoryId).toBe('c2');
+  });
+
+  it('reorders a project within its own category', () => {
+    const state: AppState = {
+      ...seeded,
+      projects: [
+        project('p1', 'c1', 'Marines'),
+        project('p2', 'c1', 'Guard'),
+        project('p3', 'c1', 'Sisters'),
+      ],
+    };
+
+    const next = reducer(state, {
+      type: 'MOVE_PROJECT',
+      payload: { projectId: 'p1', categoryId: 'c1', targetProjectId: 'p3', position: 'after' },
+    });
+
+    expect(next.projects.map((p) => p.id)).toEqual(['p2', 'p3', 'p1']);
+    expect(next.projects.every((p) => p.categoryId === 'c1')).toBe(true);
+  });
+
+  it('ignores a project dropped onto itself', () => {
+    const next = reducer(seeded, {
+      type: 'MOVE_PROJECT',
+      payload: { projectId: 'p1', categoryId: 'c1', targetProjectId: 'p1', position: 'before' },
+    });
+    expect(next).toBe(seeded);
+  });
+
+  it('ignores a project drop that leaves the order unchanged', () => {
+    const state: AppState = {
+      ...seeded,
+      projects: [project('p1', 'c1', 'Marines'), project('p2', 'c1', 'Guard')],
+    };
+
+    const next = reducer(state, {
+      type: 'MOVE_PROJECT',
+      payload: { projectId: 'p1', categoryId: 'c1', targetProjectId: 'p2', position: 'before' },
+    });
+
+    expect(next).toBe(state);
+  });
+
   it('replaces the whole state', () => {
     const replacement: AppState = { ...seeded, activeProjectId: 'p2' };
     expect(reducer(seeded, { type: 'SET_STATE', payload: replacement })).toEqual(replacement);

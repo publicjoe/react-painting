@@ -34,6 +34,13 @@ tracked through configurable painting stages.
        eye icon; the active project is bold white. A trash button appears on
        hover and asks for confirmation.
      - Deleting a category cascades to its projects and their units.
+   - **Project Drag & Drop**: grab a project's grip to reorder it within its
+     category, drop it onto another project to insert it just there — crossing
+     categories if that project lives in a different one — or drop it onto a
+     category bar to move it to the end of that category. A teal line shows the
+     landing position and the category bar outlines when it will take the drop.
+     Hovering a collapsed category expands it mid-drag so a position inside it
+     can be chosen, and dragging a project never changes which project is open.
    - **Uncategorised Group**: a maroon banner holding unallocated projects.
    - **Project Settings**: inline project name editing. Stages are stored per
      project, so different projects can carry different workflows; unit rows keep

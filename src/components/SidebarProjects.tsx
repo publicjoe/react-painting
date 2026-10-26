@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { Category, Project } from '../types';
 import { EyeIcon, TrashIcon, EditPencilIcon, DragGripIcon } from './Icons';
+
+interface ProjectMoveRequest {
+  projectId: string;
+  categoryId: string;
+  /** Project to insert next to, or null to append to the category. */
+  targetProjectId: string | null;
+  position: 'before' | 'after';
+}
 
 interface SidebarProjectsProps {
   categories: Category[];
@@ -15,6 +23,8 @@ interface SidebarProjectsProps {
   onAddProject: (categoryId: string, name: string) => void;
   onDeleteProject: (id: string) => void;
   onUpdateProjectName: (projectId: string, name: string) => void;
+  /** Reorders a project, or moves it into another category. */
+  onMoveProject: (request: ProjectMoveRequest) => void;
   /** Project currently under a dragged unit, highlighted as a drop target. */
   dropProjectId?: string | null;
 }
@@ -32,6 +42,7 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
   onAddProject,
   onDeleteProject,
   onUpdateProjectName,
+  onMoveProject,
   dropProjectId = null,
 }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
@@ -49,6 +60,148 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
   const [editedCatName, setEditedCatName] = useState('');
 
   const activeProject = projects.find((p) => p.id === activeProjectId) || projects[0];
+
+  // Project drag state. The drop target is either a project row, which fixes
+  // both the destination category and the position in it, or a category bar,
+  // which appends to that category.
+  const [draggedProjectId, setDraggedProjectId] = useState<string | null>(null);
+  const [projectDropTarget, setProjectDropTarget] = useState<{
+    id: string;
+    position: 'before' | 'after';
+  } | null>(null);
+  const [dropCategoryId, setDropCategoryId] = useState<string | null>(null);
+  // Kept in refs so pointermove, which fires constantly, only acts on changes.
+  const hoveredCategoryRef = useRef<string | null>(null);
+  const draggedProjectMovedRef = useRef(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+
+  const handleProjectPointerDown = (
+    e: React.PointerEvent<HTMLDivElement>,
+    projectId: string
+  ) => {
+    if (e.button !== 0) return; // Only primary left-click
+    e.preventDefault();
+
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      /* ignore: pointer capture may be unavailable */
+    }
+
+    draggedProjectMovedRef.current = false;
+    dragStartRef.current = { x: e.clientX, y: e.clientY };
+    setDraggedProjectId(projectId);
+  };
+
+  const handleProjectPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggedProjectId) return;
+
+    if (
+      Math.abs(e.clientX - dragStartRef.current.x) > 3 ||
+      Math.abs(e.clientY - dragStartRef.current.y) > 3
+    ) {
+      draggedProjectMovedRef.current = true;
+    }
+
+    const elements = document.elementsFromPoint(e.clientX, e.clientY);
+
+    // A project row is the precise target: it decides the destination category
+    // as well as the position within it.
+    const rowEl = elements.find((el) =>
+      el.hasAttribute('data-project-id')
+    ) as HTMLElement | undefined;
+    const rowId = rowEl?.getAttribute('data-project-id') ?? null;
+
+    if (rowEl && rowId && rowId !== draggedProjectId) {
+      const rect = rowEl.getBoundingClientRect();
+      const position: 'before' | 'after' =
+        e.clientY - rect.top < rect.height / 2 ? 'before' : 'after';
+      setProjectDropTarget({ id: rowId, position });
+      setDropCategoryId(null);
+      hoveredCategoryRef.current = null;
+      return;
+    }
+
+    setProjectDropTarget(null);
+
+    // Otherwise the category bar takes the drop and the project goes to the end
+    // of that category, which is the only way into a collapsed one.
+    const categoryEl = elements.find((el) =>
+      el.hasAttribute('data-category-id')
+    ) as HTMLElement | undefined;
+    const categoryId = categoryEl?.getAttribute('data-category-id') ?? null;
+    setDropCategoryId(categoryId);
+
+    // Expand on hover so a position inside a collapsed category can be chosen.
+    if (categoryId && categoryId !== hoveredCategoryRef.current) {
+      hoveredCategoryRef.current = categoryId;
+      const hovered = categories.find((c) => c.id === categoryId);
+      if (hovered && hovered.isExpanded === false) onToggleCategoryExpand(categoryId);
+    } else if (!categoryId) {
+      hoveredCategoryRef.current = null;
+    }
+  };
+
+  const handleProjectPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggedProjectId) return;
+
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {
+      /* ignore: pointer capture may be unavailable */
+    }
+
+    if (projectDropTarget && projectDropTarget.id !== draggedProjectId) {
+      const target = projects.find((p) => p.id === projectDropTarget.id);
+      if (target) {
+        onMoveProject({
+          projectId: draggedProjectId,
+          categoryId: target.categoryId,
+          targetProjectId: target.id,
+          position: projectDropTarget.position,
+        });
+      }
+    } else if (dropCategoryId) {
+      onMoveProject({
+        projectId: draggedProjectId,
+        categoryId: dropCategoryId,
+        targetProjectId: null,
+        position: 'after',
+      });
+    }
+
+    hoveredCategoryRef.current = null;
+    setDraggedProjectId(null);
+    setProjectDropTarget(null);
+    setDropCategoryId(null);
+  };
+
+  const renderProjectGrip = (projectId: string, iconClassName: string) => (
+    <div
+      onPointerDown={(e) => handleProjectPointerDown(e, projectId)}
+      onPointerMove={handleProjectPointerMove}
+      onPointerUp={handleProjectPointerUp}
+      onClick={(e) => {
+        // Dragging a project must not also select it.
+        if (draggedProjectMovedRef.current) e.stopPropagation();
+      }}
+      className="flex items-center justify-center flex-shrink-0 cursor-grab active:cursor-grabbing text-zinc-500 hover:text-[#3dbfb5] touch-none select-none"
+      title="Click and drag to reorder or move this project"
+    >
+      <DragGripIcon className={`${iconClassName} pointer-events-none`} />
+    </div>
+  );
+
+  const renderProjectDropLines = (projectId: string) => (
+    <>
+      {projectDropTarget?.id === projectId && projectDropTarget.position === 'before' && (
+        <div className="absolute -top-1 left-0 right-0 h-0.5 bg-[#3dbfb5] rounded-full shadow-[0_0_6px_#3dbfb5] z-30 pointer-events-none" />
+      )}
+      {projectDropTarget?.id === projectId && projectDropTarget.position === 'after' && (
+        <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#3dbfb5] rounded-full shadow-[0_0_6px_#3dbfb5] z-30 pointer-events-none" />
+      )}
+    </>
+  );
 
   const handleAddCategorySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,6 +352,8 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                       onClick={() => onToggleCategoryExpand(cat.id)}
                       className={`group flex items-center justify-between px-3 py-1.5 rounded bg-[#1e5e3a] hover:bg-[#236e45] border border-[#164b2d] cursor-pointer text-white shadow-xs transition-all ${
                         isSelected ? 'ring-1 ring-emerald-400/80 bg-[#247547]' : ''
+                      } ${
+                        dropCategoryId === cat.id ? 'ring-2 ring-[#3dbfb5]' : ''
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0">
@@ -271,7 +426,9 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                               key={p.id}
                               data-project-id={p.id}
                               onClick={() => onSelectProject(p.id)}
-                              className={`group/proj flex items-center justify-between px-2 py-1 rounded cursor-pointer transition-colors ${
+                              className={`group/proj relative flex items-center justify-between px-2 py-1 rounded cursor-pointer transition-colors ${
+                                p.id === draggedProjectId ? 'opacity-40' : ''
+                              } ${
                                 p.id === dropProjectId
                                   ? 'bg-[#3dbfb5]/20 text-white ring-1 ring-inset ring-[#3dbfb5]'
                                   : isProjActive
@@ -279,8 +436,9 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                                     : 'hover:bg-[#181b20]/60 text-zinc-400 hover:text-zinc-200'
                               }`}
                             >
+                              {renderProjectDropLines(p.id)}
                               <div className="flex items-center gap-2 truncate">
-                                <DragGripIcon className="w-3 h-3 text-zinc-500 flex-shrink-0" />
+                                {renderProjectGrip(p.id, 'w-3 h-3')}
                                 <EyeIcon className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
                                 <span
                                   className={`text-xs truncate tracking-wide ${
@@ -341,7 +499,12 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
               {uncategorisedCategory && (
                 <div className="pt-2 space-y-1">
                   {/* Maroon Header Bar */}
-                  <div className="px-3 py-1.5 rounded bg-[#6e2028] border border-[#52161c] text-white">
+                  <div
+                    data-category-id={uncategorisedCategory.id}
+                    className={`px-3 py-1.5 rounded bg-[#6e2028] border border-[#52161c] text-white ${
+                      dropCategoryId === uncategorisedCategory.id ? 'ring-2 ring-[#3dbfb5]' : ''
+                    }`}
+                  >
                     <span className="font-heading text-xs font-bold tracking-wider uppercase">
                       Uncategorised
                     </span>
@@ -356,15 +519,19 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                         return (
                           <div
                             key={p.id}
+                            data-project-id={p.id}
                             onClick={() => onSelectProject(p.id)}
-                            className={`flex items-center justify-between px-2.5 py-1 rounded cursor-pointer transition-colors ${
+                            className={`relative flex items-center justify-between px-2.5 py-1 rounded cursor-pointer transition-colors ${
+                              p.id === draggedProjectId ? 'opacity-40' : ''
+                            } ${
                               isProjActive
                                 ? 'bg-zinc-700/80 text-white font-medium'
                                 : 'hover:bg-zinc-800 text-zinc-300'
                             }`}
                           >
+                            {renderProjectDropLines(p.id)}
                             <div className="flex items-center gap-2 truncate">
-                              <DragGripIcon className="w-3.5 h-3.5 text-zinc-500" />
+                              {renderProjectGrip(p.id, 'w-3.5 h-3.5')}
                               <EyeIcon className="w-3 h-3 text-zinc-400" />
                               <span className="text-xs truncate">{p.name}</span>
                             </div>

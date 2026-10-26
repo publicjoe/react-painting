@@ -13,6 +13,16 @@ export type Action =
   | { type: 'TOGGLE_CATEGORY_EXPAND'; payload: string }
   | { type: 'ADD_PROJECT'; payload: { categoryId: string; name: string } }
   | { type: 'DELETE_PROJECT'; payload: string }
+  | {
+      type: 'MOVE_PROJECT';
+      payload: {
+        projectId: string;
+        categoryId: string;
+        /** Project to insert next to, or null to append to the category. */
+        targetProjectId: string | null;
+        position: 'before' | 'after';
+      };
+    }
   | { type: 'ADD_UNIT'; payload: { projectId: string; name: string; count: number; stages?: boolean[] } }
   | { type: 'UPDATE_UNIT'; payload: Unit }
   | { type: 'DELETE_UNIT'; payload: string }
@@ -109,6 +119,34 @@ export function paintingLogReducer(state: AppState, action: Action): AppState {
             ? remainingProjects[0]?.id || ''
             : state.activeProjectId,
       };
+    }
+
+    case 'MOVE_PROJECT': {
+      const { projectId, categoryId, targetProjectId, position } = action.payload;
+      const project = state.projects.find((p) => p.id === projectId);
+      if (!project) return state;
+      // Dropping a project onto itself is not a move.
+      if (targetProjectId === projectId) return state;
+
+      const remaining = state.projects.filter((p) => p.id !== projectId);
+      const moved: Project = { ...project, categoryId };
+
+      if (targetProjectId === null) {
+        remaining.push(moved);
+      } else {
+        const targetIndex = remaining.findIndex((p) => p.id === targetProjectId);
+        if (targetIndex === -1) return state;
+        remaining.splice(position === 'before' ? targetIndex : targetIndex + 1, 0, moved);
+      }
+
+      // Order inside a category is just array order, so an unchanged sequence
+      // means there is nothing to store.
+      const orderUnchanged =
+        moved.categoryId === project.categoryId &&
+        remaining.every((p, idx) => p.id === state.projects[idx].id);
+      if (orderUnchanged) return state;
+
+      return { ...state, projects: remaining };
     }
 
     case 'ADD_UNIT': {

@@ -35,11 +35,9 @@ tracked through configurable painting stages.
        hover and asks for confirmation.
      - Deleting a category cascades to its projects and their units.
    - **Uncategorised Group**: a maroon banner holding unallocated projects.
-   - **Project Settings**:
-     - Inline project name editing.
-     - **Project Columns**: expandable list of the stage columns, each renameable
-       inline. Stages are per project, so different projects can use different
-       workflows; unit rows store a tick per column.
+   - **Project Settings**: inline project name editing. Stages are stored per
+     project, so different projects can carry different workflows; unit rows keep
+     a tick per column.
 
 4. **Units & Painting Stages Table (Right Column)**
    - **Interactive Drag & Drop Reordering**:

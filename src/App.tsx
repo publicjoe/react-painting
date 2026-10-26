@@ -119,9 +119,6 @@ export default function App() {
           onUpdateProjectName={(projectId, name) =>
             dispatch({ type: 'UPDATE_PROJECT_NAME', payload: { projectId, name } })
           }
-          onUpdateProjectColumns={(projectId, columns) =>
-            dispatch({ type: 'UPDATE_PROJECT_COLUMNS', payload: { projectId, columns } })
-          }
         />
 
         {/* Right Column: Units & Stages Table */}

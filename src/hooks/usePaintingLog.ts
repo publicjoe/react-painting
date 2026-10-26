@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from 'react';
-import type { AppState, Unit, Project, Category, StageColumn } from '../types';
+import type { AppState, Unit, Project, Category } from '../types';
 import { defaultState, defaultColumns } from '../data/defaultData';
 
 export type Action =
@@ -17,8 +17,7 @@ export type Action =
   | { type: 'UPDATE_UNIT'; payload: Unit }
   | { type: 'DELETE_UNIT'; payload: string }
   | { type: 'REORDER_PROJECT_UNITS'; payload: { projectId: string; units: Unit[] } }
-  | { type: 'TOGGLE_UNIT_STAGE'; payload: { unitId: string; stageIndex: number } }
-  | { type: 'UPDATE_PROJECT_COLUMNS'; payload: { projectId: string; columns: StageColumn[] } };
+  | { type: 'TOGGLE_UNIT_STAGE'; payload: { unitId: string; stageIndex: number } };
 
 export function paintingLogReducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -159,14 +158,6 @@ export function paintingLogReducer(state: AppState, action: Action): AppState {
           nextStages[action.payload.stageIndex] = !nextStages[action.payload.stageIndex];
           return { ...u, stages: nextStages };
         }),
-      };
-
-    case 'UPDATE_PROJECT_COLUMNS':
-      return {
-        ...state,
-        projects: state.projects.map((p) =>
-          p.id === action.payload.projectId ? { ...p, columns: action.payload.columns } : p
-        ),
       };
 
     default:

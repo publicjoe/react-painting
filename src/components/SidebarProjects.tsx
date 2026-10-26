@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Category, Project, StageColumn } from '../types';
+import type { Category, Project } from '../types';
 import { EyeIcon, TrashIcon, EditPencilIcon, DragGripIcon } from './Icons';
 
 interface SidebarProjectsProps {
@@ -15,7 +15,6 @@ interface SidebarProjectsProps {
   onAddProject: (categoryId: string, name: string) => void;
   onDeleteProject: (id: string) => void;
   onUpdateProjectName: (projectId: string, name: string) => void;
-  onUpdateProjectColumns: (projectId: string, columns: StageColumn[]) => void;
 }
 
 export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
@@ -31,11 +30,9 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
   onAddProject,
   onDeleteProject,
   onUpdateProjectName,
-  onUpdateProjectColumns,
 }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
   const [settingsExpanded, setSettingsExpanded] = useState(true);
-  const [columnsExpanded, setColumnsExpanded] = useState(false);
 
   // New Category / Project prompt states
   const [isAddingCategory, setIsAddingCategory] = useState(false);
@@ -417,41 +414,6 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                 onChange={(e) => onUpdateProjectName(activeProject.id, e.target.value)}
                 className="w-full bg-white text-zinc-900 font-medium text-xs px-3 py-1.5 rounded border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-inner"
               />
-            </div>
-
-            {/* Field 2: PROJECT COLUMNS */}
-            <div className="space-y-1.5 border-t border-zinc-800 pt-3">
-              <div
-                onClick={() => setColumnsExpanded(!columnsExpanded)}
-                className="flex items-center justify-between cursor-pointer text-zinc-300 hover:text-white"
-              >
-                <label className="font-heading text-xs font-bold uppercase tracking-wider cursor-pointer">
-                  PROJECT COLUMNS ({activeProject.columns.length})
-                </label>
-                <span className="text-xs text-zinc-400 font-bold">
-                  {columnsExpanded ? '▲' : '▼'}
-                </span>
-              </div>
-
-              {columnsExpanded && (
-                <div className="space-y-2 pt-1 text-xs">
-                  {activeProject.columns.map((col, idx) => (
-                    <div key={col.id} className="flex items-center gap-2 bg-[#17191d] p-1.5 rounded border border-zinc-800">
-                      <span className="text-zinc-500 font-mono text-[10px] w-4">{idx + 1}</span>
-                      <input
-                        type="text"
-                        value={col.name}
-                        onChange={(e) => {
-                          const updated = [...activeProject.columns];
-                          updated[idx] = { ...updated[idx], name: e.target.value };
-                          onUpdateProjectColumns(activeProject.id, updated);
-                        }}
-                        className="flex-1 bg-transparent text-zinc-200 text-xs focus:outline-none border-b border-transparent focus:border-emerald-500"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
           </div>

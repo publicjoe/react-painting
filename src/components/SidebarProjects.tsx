@@ -195,6 +195,7 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                   <div key={cat.id} className="space-y-0.5">
                     {/* Category Pill Bar (Forest Green styling as in screenshot) */}
                     <div
+                      data-category-id={cat.id}
                       onClick={() => onToggleCategoryExpand(cat.id)}
                       className={`group flex items-center justify-between px-3 py-1.5 rounded bg-[#1e5e3a] hover:bg-[#236e45] border border-[#164b2d] cursor-pointer text-white shadow-xs transition-all ${
                         isSelected ? 'ring-1 ring-emerald-400/80 bg-[#247547]' : ''

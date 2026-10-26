@@ -22,6 +22,7 @@ interface UnitTableProps {
   onToggleUnitStage: (unitId: string, stageIndex: number) => void;
   onMoveUnitToProject: (unitId: string, projectId: string) => void;
   onDragOverProject: (projectId: string | null) => void;
+  onDragOverCategory: (categoryId: string) => void;
 }
 
 function reorderUnitsList(
@@ -58,6 +59,7 @@ export const UnitTable: React.FC<UnitTableProps> = ({
   onToggleUnitStage,
   onMoveUnitToProject,
   onDragOverProject,
+  onDragOverCategory,
 }) => {
   const [newUnitName, setNewUnitName] = useState('');
   const [newUnitCount, setNewUnitCount] = useState<number>(1);
@@ -75,6 +77,7 @@ export const UnitTable: React.FC<UnitTableProps> = ({
   // Project highlighted as the drop target; kept in a ref so the pointermove
   // handler only notifies the parent when it actually changes.
   const hoveredProjectRef = useRef<string | null>(null);
+  const hoveredCategoryRef = useRef<string | null>(null);
 
   // Sync stage array if columns length changes
   const activeStages =
@@ -141,6 +144,17 @@ export const UnitTable: React.FC<UnitTableProps> = ({
       onDragOverProject(targetProjectId);
     }
 
+    // Hovering a collapsed category expands it so its projects can take the drop.
+    const categoryEl = elements.find((el) =>
+      el.hasAttribute('data-category-id')
+    ) as HTMLElement | undefined;
+    const categoryId = categoryEl?.getAttribute('data-category-id') ?? null;
+
+    if (categoryId !== hoveredCategoryRef.current) {
+      hoveredCategoryRef.current = categoryId;
+      if (categoryId) onDragOverCategory(categoryId);
+    }
+
     if (targetProjectId) {
       setDropTarget(null);
       return;
@@ -178,6 +192,7 @@ export const UnitTable: React.FC<UnitTableProps> = ({
     }
 
     hoveredProjectRef.current = null;
+    hoveredCategoryRef.current = null;
     onDragOverProject(null);
     setDraggedUnit(null);
     setDropTarget(null);

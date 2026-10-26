@@ -153,6 +153,13 @@ export default function App() {
               dispatch({ type: 'MOVE_UNIT', payload: { unitId, projectId } })
             }
             onDragOverProject={setDropProjectId}
+            onDragOverCategory={(categoryId) => {
+              const category = state.categories.find((c) => c.id === categoryId);
+              // Expand on hover only; collapsing is still the user's click.
+              if (category && category.isExpanded === false) {
+                dispatch({ type: 'TOGGLE_CATEGORY_EXPAND', payload: categoryId });
+              }
+            }}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center p-12 bg-[#1c1f24] rounded border border-zinc-800 text-zinc-400">

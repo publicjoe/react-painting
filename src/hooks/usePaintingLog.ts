@@ -135,7 +135,6 @@ export function paintingLogReducer(state: AppState, action: Action): AppState {
         projectId: action.payload.projectId,
         name: action.payload.name,
         count: Math.max(1, action.payload.count || 1),
-        points: 0,
         stages: initialStages,
       };
 

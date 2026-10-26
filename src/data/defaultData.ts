@@ -14,7 +14,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Intercessors',
     count: 5,
-    points: 0,
     stages: [true, true, true, true],
   },
   {
@@ -22,7 +21,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Intercessor Squad - Dark Imperium',
     count: 5,
-    points: 0,
     stages: [true, true, true, true],
   },
   {
@@ -30,7 +28,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Intercessor Squad - Dark Imperium',
     count: 5,
-    points: 0,
     stages: [true, true, true, true],
   },
   {
@@ -38,7 +35,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Hellblaster Squad - Dark Imperium',
     count: 5,
-    points: 0,
     stages: [true, true, true, true],
   },
   // In progress units
@@ -47,7 +43,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Inceptor Squad - Dark Imperium',
     count: 3,
-    points: 0,
     stages: [true, true, true, false],
   },
   {
@@ -55,7 +50,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Captain in Gravis Armour- Dark Imperium',
     count: 1,
-    points: 0,
     stages: [true, true, false, false],
   },
   {
@@ -63,7 +57,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Ancient carrying an Adeptus Astartes banner - Dark Imperium',
     count: 1,
-    points: 0,
     stages: [true, true, false, false],
   },
   {
@@ -71,7 +64,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Lieutenant - Dark Imperium',
     count: 1,
-    points: 0,
     stages: [true, true, false, false],
   },
   {
@@ -79,7 +71,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Lieutenant - Dark Imperium',
     count: 1,
-    points: 0,
     stages: [true, true, false, false],
   },
   {
@@ -87,7 +78,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Lieutenant - Indomitus',
     count: 1,
-    points: 0,
     stages: [true, true, false, false],
   },
   // Unpainted units
@@ -96,7 +86,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Ragnar Blackmane - Prophecy of the Wolf',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -104,7 +93,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Captain in Terminator Armour - Leviathan',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -112,7 +100,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Librarian in Terminator Armour - Leviathan',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -120,7 +107,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Apothecary Biologis - Leviathan',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -128,7 +114,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Lieutenant in Phobos armour - Leviathan',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -136,7 +121,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Terminators - Leviathan',
     count: 5,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -144,7 +128,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Sternguard Veterans - Leviathan',
     count: 5,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -152,7 +135,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Infernus Marines - Leviathan',
     count: 10,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -160,7 +142,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Ballistus Dreadnought - Leviathan',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -168,7 +149,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Storm Speeder',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -176,7 +156,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Invader ATV',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -184,7 +163,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Tactical Warsuit',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -192,7 +170,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Reivers',
     count: 10,
-    points: 0,
     stages: [false, false, false, false],
   },
   // Additional units bringing total models to exactly 154
@@ -201,7 +178,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Captain - Indomitus',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -209,7 +185,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Bladeguard Veterans - Indomitus',
     count: 3,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -217,7 +192,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Bladeguard Ancient - Indomitus',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -225,7 +199,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Judiciar - Indomitus',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -233,7 +206,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Assault Intercessors Squad',
     count: 10,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -241,7 +213,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Outriders Squad',
     count: 3,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -249,7 +220,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Primaris Eradicators',
     count: 3,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -257,7 +227,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Intercessor Squad Gamma',
     count: 5,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -265,7 +234,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Blood Claws Pack',
     count: 10,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -273,7 +241,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Grey Hunters Pack',
     count: 10,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -281,7 +248,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Wolf Guard Terminators',
     count: 5,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -289,7 +255,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Thunderwolf Cavalry',
     count: 3,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -297,7 +262,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Wulfen Pack',
     count: 5,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -305,7 +269,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Fenrisian Wolves Pack',
     count: 10,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -313,7 +276,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Cyberwolves',
     count: 2,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -321,7 +283,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Long Fangs Pack',
     count: 5,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -329,7 +290,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Bjorn the Fell-Handed',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -337,7 +297,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Murderfang',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -345,7 +304,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Space Wolves Venerable Dreadnought',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -353,7 +311,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Redemptor Dreadnought',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -361,7 +318,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Iron Priest',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -369,7 +325,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Wolf Lord on Thunderwolf',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -377,7 +332,6 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Cyberwolf Alpha',
     count: 1,
-    points: 0,
     stages: [false, false, false, false],
   },
   {
@@ -385,13 +339,11 @@ export const initialUnits: Unit[] = [
     projectId: 'proj-spacewolves',
     name: 'Wolf Scouts Pack',
     count: 3,
-    points: 0,
     stages: [false, false, false, false],
   },
 ];
 
 export const defaultState: AppState = {
-  username: '',
   activeProjectId: 'proj-spacewolves',
   categories: [
     { id: 'cat-imperium', name: 'Warhammer 40K Imperium', isVisible: true, isExpanded: true },

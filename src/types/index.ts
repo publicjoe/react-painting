@@ -9,7 +9,6 @@ export interface Unit {
   projectId: string;
   name: string;
   count: number;
-  points: number;
   stages: boolean[]; // index corresponds to project.columns index
 }
 
@@ -30,7 +29,6 @@ export interface Category {
 }
 
 export interface AppState {
-  username: string;
   activeProjectId: string;
   categories: Category[];
   projects: Project[];

@@ -21,10 +21,9 @@ const unit = (
   name: string,
   count: number,
   stages: boolean[]
-): Unit => ({ id, projectId, name, count, points: 0, stages });
+): Unit => ({ id, projectId, name, count, stages });
 
 const seeded: AppState = {
-  username: 'Tester',
   activeProjectId: 'p1',
   categories: [
     { id: 'c1', name: 'WH40k' },
@@ -88,7 +87,7 @@ describe('paintingLogReducer', () => {
   });
 
   it('replaces the whole state', () => {
-    const replacement: AppState = { ...seeded, username: 'Someone else' };
+    const replacement: AppState = { ...seeded, activeProjectId: 'p2' };
     expect(reducer(seeded, { type: 'SET_STATE', payload: replacement })).toEqual(replacement);
   });
 });

@@ -21,7 +21,6 @@ export default function App() {
 
   // Calculate Statistics
   const stats = useMemo(() => {
-    const totalPoints = activeUnits.reduce((acc, u) => acc + (u.points || 0), 0);
     const totalModels = activeUnits.reduce((acc, u) => acc + (u.count || 0), 0);
 
     const numCols = activeProject?.columns.length || 5;
@@ -35,17 +34,7 @@ export default function App() {
     const modelsCompleteCount = completedUnits.reduce((acc, u) => acc + (u.count || 0), 0);
     const modelsCompletePercent = totalModels === 0 ? 0 : (modelsCompleteCount / totalModels) * 100;
 
-    const pointsCompleteCount = completedUnits.reduce((acc, u) => acc + (u.points || 0), 0);
-    const pointsCompletePercent = totalPoints === 0 ? 0 : (pointsCompleteCount / totalPoints) * 100;
-
-    return {
-      totalPoints,
-      totalModels,
-      pointsCompleteCount,
-      pointsCompletePercent,
-      modelsCompleteCount,
-      modelsCompletePercent,
-    };
+    return { totalModels, modelsCompleteCount, modelsCompletePercent };
   }, [activeUnits, activeProject]);
 
   // JSON Export
@@ -99,7 +88,6 @@ export default function App() {
 
       {/* Top Navbar */}
       <Header
-        username={state.username || ''}
         onResetDefaults={() => dispatch({ type: 'RESET_TO_DEFAULTS' })}
         onExportData={handleExportData}
         onImportData={handleImportData}

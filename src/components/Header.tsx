@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { PileLogo } from './Icons';
 
 interface HeaderProps {
-  username: string;
   onResetDefaults: () => void;
   onExportData: () => void;
   onImportData: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  username,
   onResetDefaults,
   onExportData,
   onImportData,
@@ -39,13 +37,6 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => setMenuOpen(false)}
             />
             <div className="absolute left-0 top-full mt-2 w-64 bg-[#1f2227] border border-[#333a44] rounded-lg shadow-2xl py-2 z-50 text-sm">
-              <div className="px-4 py-2 border-b border-[#2d333d]">
-                <p className="text-xs text-zinc-400 font-semibold uppercase">Signed in as</p>
-                <p className="text-sm font-bold text-amber-400 font-mono">
-                  {username ? `@${username}` : 'Guest'}
-                </p>
-              </div>
-
               <div className="py-1">
                 <button
                   onClick={() => {

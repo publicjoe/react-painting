@@ -171,7 +171,7 @@ export const UnitTable: React.FC<UnitTableProps> = ({
         <div className="min-w-[760px] pb-12">
           
           {/* HEADER 1: COLUMN LABELS & ICONS */}
-          <div className="flex items-center px-2 py-2 text-zinc-300 select-none">
+          <div className="flex items-center gap-1.5 px-2 py-2 text-zinc-300 select-none">
             {/* Unit Name Header */}
             <div className="flex-1 pl-6">
               <span className="font-heading text-sm font-bold tracking-wider text-[#3dbfb5] uppercase">
@@ -204,7 +204,7 @@ export const UnitTable: React.FC<UnitTableProps> = ({
           {/* HEADER 2: ADD UNIT FORM ROW */}
           <form
             onSubmit={handleAddSubmit}
-            className="flex items-center gap-2 px-2 py-1.5 bg-[#1b1e23] border-y border-[#2a303a] mb-2"
+            className="flex items-center gap-1.5 px-2 py-1.5 bg-[#1b1e23] border-y border-[#2a303a] mb-2"
           >
             {/* Drag Spacer */}
             <div className="w-4"></div>

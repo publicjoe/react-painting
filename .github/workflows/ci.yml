@@ -13,6 +13,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Build first: it starts with tsc -b, so type errors fail the run before
+      # lint and tests give a false green on code that will not compile.
+      - run: npm run build
       - run: npm run lint
       - run: npm test
-      - run: npm run build

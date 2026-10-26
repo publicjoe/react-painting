@@ -85,6 +85,35 @@ describe('paintingLogReducer', () => {
     });
   });
 
+  it('moves a unit to another project and reshapes its stages to that project', () => {
+    const thirdStage: Project = {
+      ...project('p3', 'c2', 'Party'),
+      columns: [...columns, { id: 'col-3', name: 'Based', icon: 'based' }],
+    };
+    const state: AppState = {
+      ...seeded,
+      projects: [...seeded.projects, thirdStage],
+      units: [unit('u1', 'p1', 'Captain', 1, [true, false]), unit('u9', 'p1', 'Other', 2, [])],
+    };
+
+    const next = reducer(state, { type: 'MOVE_UNIT', payload: { unitId: 'u1', projectId: 'p3' } });
+
+    // Stages are indexed by column, so the tick list follows the target project.
+    expect(next.units[0]).toMatchObject({
+      id: 'u1',
+      projectId: 'p3',
+      stages: [true, false, false],
+    });
+    expect(next.units).toHaveLength(2);
+    // Moving between projects must not change which project is open.
+    expect(next.activeProjectId).toBe(state.activeProjectId);
+  });
+
+  it('ignores a move into the project the unit already belongs to', () => {
+    const next = reducer(seeded, { type: 'MOVE_UNIT', payload: { unitId: 'u1', projectId: 'p1' } });
+    expect(next).toBe(seeded);
+  });
+
   it('replaces the whole state', () => {
     const replacement: AppState = { ...seeded, activeProjectId: 'p2' };
     expect(reducer(seeded, { type: 'SET_STATE', payload: replacement })).toEqual(replacement);

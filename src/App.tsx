@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { usePaintingLog } from './hooks/usePaintingLog';
 import { Header } from './components/Header';
 import { SidebarProjects } from './components/SidebarProjects';
@@ -7,6 +7,8 @@ import { UnitTable } from './components/UnitTable';
 export default function App() {
   const { state, dispatch } = usePaintingLog();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Project under a unit being dragged, so the sidebar can highlight it.
+  const [dropProjectId, setDropProjectId] = useState<string | null>(null);
 
   // Active Project
   const activeProject = useMemo(() => {
@@ -119,6 +121,7 @@ export default function App() {
           onUpdateProjectName={(projectId, name) =>
             dispatch({ type: 'UPDATE_PROJECT_NAME', payload: { projectId, name } })
           }
+          dropProjectId={dropProjectId}
         />
 
         {/* Right Column: Units & Stages Table */}
@@ -146,6 +149,10 @@ export default function App() {
             onToggleUnitStage={(unitId, stageIndex) =>
               dispatch({ type: 'TOGGLE_UNIT_STAGE', payload: { unitId, stageIndex } })
             }
+            onMoveUnitToProject={(unitId, projectId) =>
+              dispatch({ type: 'MOVE_UNIT', payload: { unitId, projectId } })
+            }
+            onDragOverProject={setDropProjectId}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center p-12 bg-[#1c1f24] rounded border border-zinc-800 text-zinc-400">

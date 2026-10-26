@@ -17,7 +17,8 @@ export type Action =
   | { type: 'UPDATE_UNIT'; payload: Unit }
   | { type: 'DELETE_UNIT'; payload: string }
   | { type: 'REORDER_PROJECT_UNITS'; payload: { projectId: string; units: Unit[] } }
-  | { type: 'TOGGLE_UNIT_STAGE'; payload: { unitId: string; stageIndex: number } };
+  | { type: 'TOGGLE_UNIT_STAGE'; payload: { unitId: string; stageIndex: number } }
+  | { type: 'MOVE_UNIT'; payload: { unitId: string; projectId: string } };
 
 export function paintingLogReducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -134,6 +135,24 @@ export function paintingLogReducer(state: AppState, action: Action): AppState {
         ...state,
         units: state.units.map((u) => (u.id === action.payload.id ? action.payload : u)),
       };
+
+    case 'MOVE_UNIT': {
+      const { unitId, projectId } = action.payload;
+      const unit = state.units.find((u) => u.id === unitId);
+      const target = state.projects.find((p) => p.id === projectId);
+      if (!unit || !target || unit.projectId === projectId) return state;
+
+      // Stages are indexed by column, so rebuild the ticks against the target
+      // project's stages rather than carrying an array of the wrong length.
+      const stages = target.columns.map((_, idx) => Boolean(unit.stages[idx]));
+      const moved: Unit = { ...unit, projectId, stages };
+
+      // Prepend so the unit lands at the top of its new project, like ADD_UNIT.
+      return {
+        ...state,
+        units: [moved, ...state.units.filter((u) => u.id !== unitId)],
+      };
+    }
 
     case 'DELETE_UNIT':
       return {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { Unit, StageColumn } from '../types';
 import {
   BuiltIcon,
@@ -20,6 +20,8 @@ interface UnitTableProps {
   onDeleteUnit: (id: string) => void;
   onReorderUnits: (units: Unit[]) => void;
   onToggleUnitStage: (unitId: string, stageIndex: number) => void;
+  onMoveUnitToProject: (unitId: string, projectId: string) => void;
+  onDragOverProject: (projectId: string | null) => void;
 }
 
 function reorderUnitsList(
@@ -54,6 +56,8 @@ export const UnitTable: React.FC<UnitTableProps> = ({
   onDeleteUnit,
   onReorderUnits,
   onToggleUnitStage,
+  onMoveUnitToProject,
+  onDragOverProject,
 }) => {
   const [newUnitName, setNewUnitName] = useState('');
   const [newUnitCount, setNewUnitCount] = useState<number>(1);
@@ -68,6 +72,9 @@ export const UnitTable: React.FC<UnitTableProps> = ({
     position: 'before' | 'after';
   } | null>(null);
   const [pointerPos, setPointerPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  // Project highlighted as the drop target; kept in a ref so the pointermove
+  // handler only notifies the parent when it actually changes.
+  const hoveredProjectRef = useRef<string | null>(null);
 
   // Sync stage array if columns length changes
   const activeStages =
@@ -119,8 +126,27 @@ export const UnitTable: React.FC<UnitTableProps> = ({
     if (!draggedUnit) return;
     setPointerPos({ x: e.clientX, y: e.clientY });
 
-    // Determine target row under pointer
     const elements = document.elementsFromPoint(e.clientX, e.clientY);
+
+    // A project in the sidebar takes precedence: dropping there moves the unit
+    // to that project instead of reordering it here.
+    const projectEl = elements.find((el) =>
+      el.hasAttribute('data-project-id')
+    ) as HTMLElement | undefined;
+    const hoveredId = projectEl?.getAttribute('data-project-id') ?? null;
+    const targetProjectId = hoveredId && hoveredId !== draggedUnit.projectId ? hoveredId : null;
+
+    if (targetProjectId !== hoveredProjectRef.current) {
+      hoveredProjectRef.current = targetProjectId;
+      onDragOverProject(targetProjectId);
+    }
+
+    if (targetProjectId) {
+      setDropTarget(null);
+      return;
+    }
+
+    // Determine target row under pointer
     const rowEl = elements.find((el) => el.classList.contains('unit-row')) as HTMLElement | undefined;
 
     if (rowEl) {
@@ -144,11 +170,15 @@ export const UnitTable: React.FC<UnitTableProps> = ({
       /* ignore: pointer capture may be unavailable */
     }
 
-    if (dropTarget && dropTarget.id !== draggedUnit.id) {
+    if (hoveredProjectRef.current && hoveredProjectRef.current !== draggedUnit.projectId) {
+      onMoveUnitToProject(draggedUnit.id, hoveredProjectRef.current);
+    } else if (dropTarget && dropTarget.id !== draggedUnit.id) {
       const updated = reorderUnitsList(units, draggedUnit.id, dropTarget.id, dropTarget.position);
       onReorderUnits(updated);
     }
 
+    hoveredProjectRef.current = null;
+    onDragOverProject(null);
     setDraggedUnit(null);
     setDropTarget(null);
   };

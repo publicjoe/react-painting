@@ -15,6 +15,8 @@ interface SidebarProjectsProps {
   onAddProject: (categoryId: string, name: string) => void;
   onDeleteProject: (id: string) => void;
   onUpdateProjectName: (projectId: string, name: string) => void;
+  /** Project currently under a dragged unit, highlighted as a drop target. */
+  dropProjectId?: string | null;
 }
 
 export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
@@ -30,6 +32,7 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
   onAddProject,
   onDeleteProject,
   onUpdateProjectName,
+  dropProjectId = null,
 }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
   const [settingsExpanded, setSettingsExpanded] = useState(true);
@@ -265,11 +268,14 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                           return (
                             <div
                               key={p.id}
+                              data-project-id={p.id}
                               onClick={() => onSelectProject(p.id)}
                               className={`group/proj flex items-center justify-between px-2 py-1 rounded cursor-pointer transition-colors ${
-                                isProjActive
-                                  ? 'bg-[#181b20] text-white font-bold'
-                                  : 'hover:bg-[#181b20]/60 text-zinc-400 hover:text-zinc-200'
+                                p.id === dropProjectId
+                                  ? 'bg-[#3dbfb5]/20 text-white ring-1 ring-inset ring-[#3dbfb5]'
+                                  : isProjActive
+                                    ? 'bg-[#181b20] text-white font-bold'
+                                    : 'hover:bg-[#181b20]/60 text-zinc-400 hover:text-zinc-200'
                               }`}
                             >
                               <div className="flex items-center gap-2 truncate">

@@ -1,82 +1,97 @@
 # Pile of Potential UI Overhaul
 
-The application has been transformed to match the **Pile of Potential** interface.
+A tabletop miniature painting tracker: projects held in categories, with each unit
+tracked through configurable painting stages.
 
 ## Visual & Functional Features
 
 1. **Top Navigation Bar**
-   - **Menu**: Accessible hamburger dropdown menu with actions including _Export Data (JSON)_ and _Import Data (JSON)_.
-   - **Branding**: Bespoke tabletop wargaming **Pile of Potential** logo.
-   - **User Profile**: User handle (``) with avatar badge.
+   - **Menu**: hamburger dropdown with two actions — _Export Backup (JSON)_ and
+     _Import Data (JSON)_. The import is validated on load and replaces the whole
+     state; the export downloads the current state as a dated JSON file.
+   - **Branding**: the bespoke tabletop wargaming **Pile of Potential** mark with
+     the `PAINTING LOG` title.
 
-2. **Dashboard Header & Real-Time Stats**
-   - **Title & Quick Share**: Heavy condensed title (`EDIT MY PILE OF POTENTIAL`), ``user tag,`VIEW`public preview button, and copyable`QUICK SHARE` link.
-   - **Stat Metric Cards**:
-     - **TOTAL POINTS**: Total points across models in project.
-     - **TOTAL MODELS**: Sum of all miniature counts (154 in default dataset).
-     - **POINTS COMPLETE**: Split indicator showing completed points percentage and count.
-     - **MODELS COMPLETE**: Split indicator calculating complete models count (20) and exact percentage (**12.99%**).
+2. **Project Stats, In The Unit Table Header**
+   - The stats are not a separate bar: they sit on the table header row, to the
+     right of `UNIT NAME`, so they scroll and resize with the table itself.
+   - **TOTAL**: total models across every unit in the active project (154 in the
+     default dataset). The value occupies the model count column, so it reads as
+     that column's total above the per-unit counts.
+   - **DONE**: a split indicator, percentage complete in teal and the completed
+     model count in dark. A unit counts as complete only when every one of the
+     project's stage columns is ticked (20 of 154, i.e. 13%, in the default
+     dataset).
 
 3. **Projects & Categories Management (Left Column)**
-   - **Collapsible Panels**: Smooth toggle for `PROJECTS` and `PROJECT SETTINGS`.
-   - **Actions**: `ADD PROJECT` and `ADD CATEGORY` buttons.
+   - **Collapsible Panels**: smooth toggle for `PROJECTS` and `PROJECT SETTINGS`.
+   - **Actions**: `ADD PROJECT` and `ADD CATEGORY` buttons, each revealing an
+     inline name field.
    - **Expandable Green Category Pills**:
-     - Forest-green category bars with visibility toggle (`👁`), expand/collapse indicator (`▲`/`▼`), edit pencil (`📝`), and delete button (`🗑️`).
-     - Clicking a category expands it to reveal its nested projects:
-       - `:: 👁 Adeptus Mechanicus`
-       - `:: 👁 Adepta Sororitas`
-       - `:: 👁 Astra Militarum`
-       - `:: 👁 Blood Angels`
-       - `:: 👁 Dark Angels`
-       - `:: 👁 Dark Angels Vehicles`
-       - `:: 👁 Space Wolves` (**Selected / Active Project**, highlighted in bold white)
-       - `:: 👁 Space Wolves Firstborn`
-       - `:: 👁 Ultramarines`
-     - Selecting any project instantly switches the main table, stats, and settings to that project.
-   - **Uncategorised Group**: Maroon category banner housing unallocated miniature projects (`Unallocated`, `Unallocated Primaris`).
+     - Forest-green bars with a visibility toggle (`👁`), expand/collapse
+       indicator (`▲`/`▼`), edit pencil, and delete button.
+     - Clicking a category reveals its projects, each shown with a grip and an
+       eye icon; the active project is bold white. A trash button appears on
+       hover and asks for confirmation.
+     - Deleting a category cascades to its projects and their units.
+   - **Uncategorised Group**: a maroon banner holding unallocated projects.
    - **Project Settings**:
-     - Inline project name editing (`Space Wolves`).
+     - Inline project name editing.
      - Project visibility toggle (`PUBLIC` / `PRIVATE`).
-     - Customizable project columns and stages.
+     - **Project Columns**: expandable list of the stage columns, each renameable
+       inline. Stages are per project, so different projects can use different
+       workflows; unit rows store a tick per column.
 
-<<<<<<< HEAD
 4. **Units & Painting Stages Table (Right Column)**
    - **Interactive Drag & Drop Reordering**:
-     - Grab any unit using the **six dots** handle on the left with left-click and hold.
-     - Move the cursor up or down: an illuminated **teal landing indicator line** with pin markers shows dynamically where the row will insert (either above or below the target row).
-     - A floating preview pill displays the unit name and model count tracking alongside the cursor.
-     - The row currently being dragged is highlighted with dashed teal borders and reduced opacity.
-     - Releasing the mouse button drops the unit in the exact chosen location and updates `localStorage`.
-   - **Stage Icons**: 4 circular badges representing the core miniature painting workflow:
-     1. Assembly / Built (`BuiltIcon`)
-     2. Spray Primer / Undercoat (`PrimedIcon`)
-     3. Basecoat / Paint (`PaintedIcon`)
-     4. Scenic Base / Finish (`BasedIcon`)
-   - **Quick Add Row**: Inline input for new unit names, count, initial stage selection, and `Add Unit` button.
-   - **Dynamic Row Highlighting**:
-     - Units with 100% completed stages turn soft sage-green.
-     - Units in-progress maintain neutral stone-grey.
-   - **Stage Cell Status**:
-     - Completed stages display in lush green with custom blue checkboxes.
-     - Incomplete stages display in dusty rose with white checkboxes.
-   - **Inline Editing & Management**:
-     - Unit names and model counts are editable directly in the row.
-     - Red trash can buttons for deletion.
-=======
-3. **Models Breakdown**
-   - Sleek and minimalistic input toggles explicitly for: Built, Primed, Painted, Based statuses. 
-   - A tabular view utilizing custom Tailwind CSS checkboxes (smooth SVGs) combined with editable inline text fields for rapidly updating names or counts.
+     - Grab any unit by the **six dots** handle with left-click and hold.
+     - An illuminated teal landing line with pin markers shows where the row will
+       insert, above or below the hovered row.
+     - A floating pill follows the cursor with the unit name and model count, and
+       the dragged row dims with dashed teal borders.
+     - Releasing drops the unit in place and the new order is saved.
+   - **Stage Icons**: circular badges for the default four-stage workflow — Built,
+     Primed, Painted, Based. These use custom artwork (white marks on transparent
+     backgrounds, in `src/assets`), sized with `object-contain` so the taller
+     source images are not squashed. Icons are fixed images rather than
+     `currentColor` SVGs, so they do not recolour.
+   - **Quick Add Row**: inline name field, count, initial stage checkboxes, and an
+     `Add Unit` button. New units are inserted at the top of the list.
+   - **Dynamic Row Highlighting**: units fully through every stage turn soft
+     sage-green; in-progress units stay neutral stone-grey.
+   - **Stage Cell Status**: completed stages show lush green with custom blue
+     checkboxes; incomplete stages show dusty rose with white checkboxes. Clicking
+     a cell toggles that stage for that unit.
+   - **Inline Editing & Management**: unit names and model counts are editable in
+     the row, and a red trash button deletes a unit.
+
+## Persistence
+
+State is saved to `localStorage` under `pile-of-potential-state-v4` on every
+change and restored on load, so a refresh keeps your work. The seed dataset is
+only used on a first run with empty storage. There is no in-app reset: to start
+over, clear that key in the browser devtools, or import a backup file.
 
 ## How to Run
 
-1. Make sure you are in the directory we built:
+1. Install dependencies:
    ```bash
-   cd react-painting
    npm install
    ```
-2. Start the development server using Vite:
+2. Start the development server:
    ```bash
    npm run dev
    ```
-3. Open the provided `localhost` domain (typically `http://localhost:5173`) in your browser to experience it for yourself!
->>>>>>> 0a25e5c4ef1959c5c87c0e0a598d475a25208035
+3. Open `http://localhost:5173` (Vite's default port).
+
+## Checks
+
+```bash
+npm run build   # tsc -b first, then the Vite bundle
+npm run lint    # eslint
+npm test        # vitest, including type-level tests
+```
+
+`npm test` also type-checks `src/types/state.test-d.ts`, which pins the `AppState`
+and `Unit` field lists, so a required field missing from the seed data fails the
+tests rather than only the build.

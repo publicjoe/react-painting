@@ -2,16 +2,11 @@ import React, { useState } from 'react';
 import { PileLogo } from './Icons';
 
 interface HeaderProps {
-  onResetDefaults: () => void;
   onExportData: () => void;
   onImportData: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  onResetDefaults,
-  onExportData,
-  onImportData,
-}) => {
+export const Header: React.FC<HeaderProps> = ({ onExportData, onImportData }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -38,19 +33,6 @@ export const Header: React.FC<HeaderProps> = ({
             />
             <div className="absolute left-0 top-full mt-2 w-64 bg-[#1f2227] border border-[#333a44] rounded-lg shadow-2xl py-2 z-50 text-sm">
               <div className="py-1">
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    onResetDefaults();
-                  }}
-                  className="w-full text-left px-4 py-2 text-zinc-200 hover:bg-[#2c323c] hover:text-amber-300 flex items-center gap-2 transition-colors"
-                >
-                  <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span>Reset to Demo Data</span>
-                </button>
-
                 <button
                   onClick={() => {
                     setMenuOpen(false);

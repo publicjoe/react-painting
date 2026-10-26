@@ -88,7 +88,6 @@ export default function App() {
 
       {/* Top Navbar */}
       <Header
-        onResetDefaults={() => dispatch({ type: 'RESET_TO_DEFAULTS' })}
         onExportData={handleExportData}
         onImportData={handleImportData}
       />

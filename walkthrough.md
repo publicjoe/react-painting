@@ -5,7 +5,7 @@ The application has been transformed to match the **Pile of Potential** interfac
 ## Visual & Functional Features
 
 1. **Top Navigation Bar**
-   - **Menu**: Accessible hamburger dropdown menu with actions including _Reset to Demo Data_, _Export Data (JSON)_, and _Import Data (JSON)_.
+   - **Menu**: Accessible hamburger dropdown menu with actions including _Export Data (JSON)_ and _Import Data (JSON)_.
    - **Branding**: Bespoke tabletop wargaming **Pile of Potential** logo.
    - **User Profile**: User handle (``) with avatar badge.
 

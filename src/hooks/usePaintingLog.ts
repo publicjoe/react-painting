@@ -4,7 +4,6 @@ import { defaultState, defaultColumns } from '../data/defaultData';
 
 export type Action =
   | { type: 'SET_STATE'; payload: AppState }
-  | { type: 'RESET_TO_DEFAULTS' }
   | { type: 'SET_ACTIVE_PROJECT'; payload: string }
   | { type: 'UPDATE_PROJECT_NAME'; payload: { projectId: string; name: string } }
   | { type: 'UPDATE_PROJECT_VISIBILITY'; payload: { projectId: string; visibility: 'public' | 'private' } }
@@ -26,9 +25,6 @@ export function paintingLogReducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_STATE':
       return action.payload;
-
-    case 'RESET_TO_DEFAULTS':
-      return { ...defaultState };
 
     case 'SET_ACTIVE_PROJECT':
       return { ...state, activeProjectId: action.payload };

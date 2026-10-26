@@ -9,6 +9,7 @@ export type Action =
   | { type: 'UPDATE_PROJECT_NAME'; payload: { projectId: string; name: string } }
   | { type: 'UPDATE_PROJECT_VISIBILITY'; payload: { projectId: string; visibility: 'public' | 'private' } }
   | { type: 'ADD_CATEGORY'; payload: { name: string } }
+  | { type: 'UPDATE_CATEGORY_NAME'; payload: { categoryId: string; name: string } }
   | { type: 'DELETE_CATEGORY'; payload: string }
   | { type: 'TOGGLE_CATEGORY_VISIBILITY'; payload: string }
   | { type: 'TOGGLE_CATEGORY_EXPAND'; payload: string }
@@ -21,7 +22,7 @@ export type Action =
   | { type: 'TOGGLE_UNIT_STAGE'; payload: { unitId: string; stageIndex: number } }
   | { type: 'UPDATE_PROJECT_COLUMNS'; payload: { projectId: string; columns: StageColumn[] } };
 
-function paintingLogReducer(state: AppState, action: Action): AppState {
+export function paintingLogReducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_STATE':
       return action.payload;
@@ -59,6 +60,14 @@ function paintingLogReducer(state: AppState, action: Action): AppState {
         categories: [...state.categories, newCategory],
       };
     }
+
+    case 'UPDATE_CATEGORY_NAME':
+      return {
+        ...state,
+        categories: state.categories.map((c) =>
+          c.id === action.payload.categoryId ? { ...c, name: action.payload.name } : c
+        ),
+      };
 
     case 'DELETE_CATEGORY':
       return {
@@ -185,7 +194,7 @@ const STORAGE_KEY = 'pile-of-potential-state-v4';
 export function isAppState(value: unknown): value is AppState {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
-  return Array.isArray(v.categories) && Array.isArray(v.projects) && Array.isArray(v.models);
+  return Array.isArray(v.categories) && Array.isArray(v.projects) && Array.isArray(v.units);
 }
 
 export function usePaintingLog() {

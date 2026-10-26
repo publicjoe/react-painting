@@ -78,7 +78,7 @@ export default function App() {
         } else {
           alert('Invalid backup file format.');
         }
-      } catch (err) {
+      } catch {
         alert('Could not read the JSON file.');
       }
     };
@@ -129,6 +129,9 @@ export default function App() {
           onSelectProject={(id) => dispatch({ type: 'SET_ACTIVE_PROJECT', payload: id })}
           onAddCategory={(name) => dispatch({ type: 'ADD_CATEGORY', payload: { name } })}
           onDeleteCategory={(id) => dispatch({ type: 'DELETE_CATEGORY', payload: id })}
+          onUpdateCategoryName={(categoryId, name) =>
+            dispatch({ type: 'UPDATE_CATEGORY_NAME', payload: { categoryId, name } })
+          }
           onToggleCategoryVisibility={(id) =>
             dispatch({ type: 'TOGGLE_CATEGORY_VISIBILITY', payload: id })
           }

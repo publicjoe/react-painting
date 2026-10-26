@@ -101,7 +101,9 @@ export const UnitTable: React.FC<UnitTableProps> = ({
 
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch {}
+    } catch {
+      /* ignore: pointer capture may be unavailable */
+    }
 
     setDraggedUnit(unit);
     setPointerPos({ x: e.clientX, y: e.clientY });
@@ -132,7 +134,9 @@ export const UnitTable: React.FC<UnitTableProps> = ({
 
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {}
+    } catch {
+      /* ignore: pointer capture may be unavailable */
+    }
 
     if (dropTarget && dropTarget.id !== draggedUnit.id) {
       const updated = reorderUnitsList(units, draggedUnit.id, dropTarget.id, dropTarget.position);

@@ -9,6 +9,7 @@ interface SidebarProjectsProps {
   onSelectProject: (id: string) => void;
   onAddCategory: (name: string) => void;
   onDeleteCategory: (id: string) => void;
+  onUpdateCategoryName: (id: string, name: string) => void;
   onToggleCategoryVisibility: (id: string) => void;
   onToggleCategoryExpand: (id: string) => void;
   onAddProject: (categoryId: string, name: string) => void;
@@ -25,6 +26,7 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
   onSelectProject,
   onAddCategory,
   onDeleteCategory,
+  onUpdateCategoryName,
   onToggleCategoryVisibility,
   onToggleCategoryExpand,
   onAddProject,
@@ -319,8 +321,8 @@ export const SidebarProjects: React.FC<SidebarProjectsProps> = ({
                         />
                         <button
                           onClick={() => {
-                            // Update category
-                            cat.name = editedCatName;
+                            const name = editedCatName.trim();
+                            if (name) onUpdateCategoryName(cat.id, name);
                             setEditingCatId(null);
                           }}
                           className="text-xs text-emerald-400 font-bold"
